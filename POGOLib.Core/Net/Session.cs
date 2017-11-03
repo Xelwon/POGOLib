@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using GeoCoordinatePortable;
+using POGOLib.Official;
 using POGOLib.Official.Exceptions;
 using POGOLib.Official.Logging;
 using POGOLib.Official.LoginProviders;
@@ -15,7 +16,6 @@ using POGOLib.Official.Util.Device;
 using POGOLib.Official.Util.Hash;
 using POGOProtos.Data;
 using POGOProtos.Settings;
-using System.Diagnostics;
 
 namespace POGOLib.Official.Net
 {
@@ -49,16 +49,26 @@ namespace POGOLib.Official.Net
         {
             if (!ValidLoginProviders.Contains(loginProvider.ProviderId))
             {
-                throw new ArgumentException($"LoginProvider ID must be one of the following: {string.Join(", ", ValidLoginProviders)}");
+                //throw new ArgumentException($"LoginProvider ID must be one of the following: {string.Join(", ", ValidLoginProviders)}");
+                throw new ArgumentException(string.Format("LoginProvider ID must be one of the following: {0}", string.Join(", ", ValidLoginProviders)));
             }
 
             State = SessionState.Stopped;
             Device = deviceWrapper ?? DeviceInfoUtil.GetRandomDevice();
 
-            HttpClient = new HttpClient(new HttpClientHandler
+            HttpClientHandler handler = new HttpClientHandler
             {
                 AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
-            });
+            };
+            if (!string.IsNullOrEmpty(Configuration.ProxyAddress)) {
+                handler.Proxy = new WebProxy(Configuration.ProxyAddress, true);
+                if (!string.IsNullOrEmpty(Configuration.ProxyCredentials)) {
+                    var user_pwd = Configuration.ProxyCredentials.Split(':');
+                    handler.Proxy.Credentials = new NetworkCredential(user_pwd[0], user_pwd[1]);
+                }
+            }
+            HttpClient = new HttpClient(handler);
+
             HttpClient.DefaultRequestHeaders.UserAgent.TryParseAdd(Constants.ApiUserAgent);
             HttpClient.DefaultRequestHeaders.ExpectContinue = false;
 
@@ -187,9 +197,8 @@ namespace POGOLib.Official.Net
                 throw new SessionStateException("The session has already been stopped.");
             }
 
-            State = SessionState.Stopped;
-            
             _heartbeat.StopDispatcher();
+            State = SessionState.Stopped;
         }
 
         /// <summary>
