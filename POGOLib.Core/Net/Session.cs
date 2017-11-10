@@ -16,6 +16,7 @@ using POGOLib.Official.Util.Device;
 using POGOLib.Official.Util.Hash;
 using POGOProtos.Data;
 using POGOProtos.Settings;
+using POGOLib.Official.Util;
 
 namespace POGOLib.Official.Net
 {
