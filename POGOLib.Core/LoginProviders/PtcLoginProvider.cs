@@ -56,10 +56,12 @@ namespace POGOLib.Official.LoginProviders
             {
                 httpClientHandler.AllowAutoRedirect = false;
                 if (!string.IsNullOrEmpty(Proxy)) {
-                    httpClientHandler.Proxy = new WebProxy(Proxy, true);
+                    WebProxy newProxy = new WebProxy(Proxy, true);
+                    httpClientHandler.Proxy = newProxy;
                     if (!string.IsNullOrEmpty(Credentials)) {
                         var user_pwd = Credentials.Split(':');
-                        httpClientHandler.Proxy.Credentials = new NetworkCredential(user_pwd[0], user_pwd[1]);
+                        newProxy.Credentials = new NetworkCredential(user_pwd[0], user_pwd[1]);
+                        httpClientHandler.Proxy.Credentials = newProxy.Credentials;
                     }
                 }                
                 using (var httpClient = new HttpClient(httpClientHandler))

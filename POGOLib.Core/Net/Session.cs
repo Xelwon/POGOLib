@@ -62,10 +62,12 @@ namespace POGOLib.Official.Net
                 AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
             };
             if (!string.IsNullOrEmpty(Configuration.ProxyAddress)) {
-                handler.Proxy = new WebProxy(Configuration.ProxyAddress, true);
+                WebProxy newProxy = new WebProxy(Configuration.ProxyAddress, true);
+                handler.Proxy = newProxy;
                 if (!string.IsNullOrEmpty(Configuration.ProxyCredentials)) {
                     var user_pwd = Configuration.ProxyCredentials.Split(':');
-                    handler.Proxy.Credentials = new NetworkCredential(user_pwd[0], user_pwd[1]);
+                    newProxy.Credentials = new NetworkCredential(user_pwd[0], user_pwd[1]);
+                    handler.Proxy.Credentials = newProxy.Credentials;
                 }
             }
             HttpClient = new HttpClient(handler);

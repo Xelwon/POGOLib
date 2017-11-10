@@ -14,16 +14,10 @@ namespace POGOLib.Official.Util
             this.v = v;
         }
 
-        public ICredentials Credentials { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public ICredentials Credentials { get; set; }
 
-        public Uri GetProxy(Uri destination)
-        {
-            throw new NotImplementedException();
-        }
+        public Uri GetProxy(Uri destination) => throw new NotImplementedException();
 
-        public bool IsBypassed(Uri host)
-        {
-            throw new NotImplementedException();
-        }
+        public bool IsBypassed(Uri host) => throw new NotImplementedException();
     }
 }
