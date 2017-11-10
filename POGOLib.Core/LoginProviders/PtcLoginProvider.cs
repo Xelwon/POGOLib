@@ -10,6 +10,7 @@ using POGOLib.Official;
 using POGOLib.Official.Logging;
 using POGOLib.Official.Net.Authentication.Data;
 using System.Net;
+using POGOLib.Official.Util;
 
 namespace POGOLib.Official.LoginProviders
 {
